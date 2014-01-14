@@ -1,8 +1,6 @@
 MMBIRFinder
 ===========
 
-A bionformatics tool to detect template-switching events associated with microhomology-mediated break-induced replication.
-
 MMBIRFinder is a bioinformatics tool to detect microhomology-mediated break-induced replication(MMBIR) events. 
 
 Specifically, MMBIRFinder detects template-switching events associated with MMBIR.
