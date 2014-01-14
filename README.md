@@ -82,7 +82,7 @@ Configuration File
 License
 ----
 
-MIT
+GPLv2
 
 
 Version
