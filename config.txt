@@ -1,0 +1,110 @@
+# The configuration file for MMBIRFinder
+
+# sLogDirName = Directory where log files should be kept
+sLogDirName=Log
+
+# projectDirectory - the directory to store and retrieve all created files
+# Leave empty for current working directory
+projectDirectory=
+
+# referenceFile - the FASTA reference file
+referenceFile=chromosome.fasta
+#referenceFile=hg19.fa
+#referenceFile=trial2/yeast_bir_reference.fasta
+
+# chromosome - limit the bir search to a single chromosome
+# enter 0 to search them all
+#chromosome=1
+chromosome=2
+
+# readsFile - the FASTA or FASTQ reads file
+readsFile=sample1_normal.bam
+
+# unalignedFile - the SAM and FASTA file name for the unaligned reads
+unalignedFile=unaligned
+
+# outputFile - the name of the SAM file for the BWA alignment output
+outputFile=bwa
+
+# locationsFile - the name of the temporary file for the possible BIR locations
+locationsFile=possible_bir_locations.txt
+
+# clusterFile - the name of the file to output the cluster information
+clusterFile=half_read_clusters.txt
+
+# pairedEnd - is the dataset paired-end?
+pairedEnd=false
+
+############################################################################################
+######### The following options govern whether the various alignment steps are     #########
+######### performed.                                                               #########
+
+# runAlignment - a testing method to save time
+runAlignment=false
+
+# onlyAlign - only run the alignment, not the birFinder
+# WARNING: IF TRUE, runAlignment MUST ALSO BE TRUE
+onlyAlign=false
+
+# index - index the genome
+indexGenome=false
+
+# fullAlign - run the full alignment on the full-read dataset
+# Useful for TCGA data when you already have an aligned bam file
+fullAlign=false
+
+# bamFile
+bamFile=true
+
+# extractUnalignedReads
+extractUnalignedReads=false
+
+# halfAlign
+halfAlign=false
+
+# extractHalfReads
+extractHalfReads=true
+
+# filterOut
+filterOut=true
+
+############################################################################################
+######### The following options describe details of the clustering algorithm       #########
+
+# performClustering - the program will cluster the reads and export them to a file. Another MySQL script
+# is required to continue with the program
+performClustering=false
+
+# minConsolidate - the minimum number of reads (evidence) to consolidate (IMPORTANT)
+minConsolidate=20
+
+# mysql - Should the pipeline use MySQL to find reads?
+mysql=true
+
+#mysqlFile - the mysql_results.txt file
+mysqlFile=../scripts/mysql_results2.txt
+
+
+############################################################################################
+######### The following options describe details of the birSearch algorithm        #########
+
+# searchLength - the length in b.p. to search for a possible template strand
+searchLength=100
+
+# minSeqLength - the minimum length of the split-read DNA sequence
+minSeqLength=18
+
+# minBriLength - the minimum length of a BIR region (IMPORTANT)
+minBirLength=6
+
+# minAlignedLength - the minimum length of the aligned region to be considered a successful possible BIR
+minAlignedLength=12
+
+# missCount - for the FSM, the number of CONSECUTIVE misses to change states to the possible BIR regions
+missCount=2
+
+# hitCount - for the FSM, the number of CONSECUTIVE hits to change states from the BIR region to the right aligned region
+hitCount=4
+
+# tolerance 
+tolerance=15
