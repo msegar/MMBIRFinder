@@ -136,7 +136,7 @@ perl db.pl
 ```
 The outputted file 'mysql_results.txt' is then used as an input for the second half of the MMBIRFinder tool. 
 
-**Don't forget to changed the configuration file to not run the initial alignment and clustering again!!**  
+**Don't forget to change the configuration file to not run the initial alignment and clustering again!!**  
 
 
 License
