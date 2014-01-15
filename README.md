@@ -1,5 +1,5 @@
 MMBIRFinder
-===========
+=========
 
 MMBIRFinder is a bioinformatics tool to detect microhomology-mediated break-induced replication(MMBIR) events. 
 
@@ -78,6 +78,66 @@ Configuration File
 
 
 
+MySQL Script
+----
+The included MySQL script greatly decreases the computation time to run the program. If set in the configuration file,
+the program will stop after clustering the anchored reads. The program now needs to find the other half of the read (i.e.
+the unaligned read). Since there are millions of unaligned reads that need to be paired with the anchored/aligned read,
+it is a computationally expensive problem. 
+
+After cluserering, the program will output a file called 'half_read_clusters.txt' where the individual columns are as followed:
+1. Read name
+2. Sequence
+3. Location
+4. Chromosome
+5. Cluster
+
+Similarly, the unaligned files from the second BWA alignment are outputted. While the filename will changed depending on the
+configuration settings, the default name is 'unaligned2_2.sam'. A file named 'columns.txt' should be created using any method
+that has unaligned read name in column 1 and the DNA sequence in column 2 extracted from 'unaligned2_2.sam'.
+```linux
+less unaligned2_2.sam | sed '1,25d' | awk '{print $1 "\t" $10}' > columns.txt
+```
+
+The following steps need to then be executed at the command prompt and MySQL:
+
+```bash
+mysql --local-infile -u root -p
+```
+```mysql
+create database test;
+create table unaligned ( `read` varchar(100) NOT NULL PRIMARY KEY, `sequence` varchar(100) NOT NULL ) ENGINE = MYISAM;
+LOAD DATA LOCAL '.../path/to/file/columns.txt' INTO TABLE unaligned;
+
+mysql> show tables;
++----------------+
+| Tables_in_test |
++----------------+
+| unaligned      |
++----------------+
+
+mysql> show columns from unaligned;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| read  | varchar(100) | NO   | PRI | NULL    |       |
+| seq   | varchar(100) | NO   |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+```
+
+Back at the command prompt, since the engine is MYISAM, the database needs to be indexed (this may take up to 20 hours!):
+```linux
+myisamchk -o /path/to/mysql/test/unaligned.MYI --key_bufer_size=2G
+```
+
+Finally, run the Perl script db.pl changing the username and password as appropriate:
+```perl
+perl db.pl
+```
+The outputted file 'mysql_results.txt' is then used as an input for the second half of the MMBIRFinder tool. 
+
+**Don't forget to changed the configuration file to not run the initial alignment and clustering again!!**  
+
 
 License
 ----
@@ -89,3 +149,6 @@ Version
 ----
 
 0.1
+
+
+    

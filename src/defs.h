@@ -102,7 +102,6 @@ int convertSAMtoFASTA(string s);
 // birFinder
 int startCandidateReads();
 int createSplitReadDatabase(string s1);
-int createParentReads();
 
 // birAligner
 int startBirFinder();
@@ -112,6 +111,8 @@ void getBirLoc(t_alignment_struct tAligned, int st, int i);
 // birConsolidate
 int startConsolidate();
 void consolidateLocations();
+int createParentReadsFromMySQL();
+int createParentReads();
 void getConsensus();
 void consolidateBaseCalls();
 bool compareStart(const t_consolidated &a, const t_consolidated &b);

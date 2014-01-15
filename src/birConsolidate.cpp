@@ -52,7 +52,7 @@ int startConsolidate(){
 
 	// Let's destruct all the elements in the database to save space
 	vCandidateReads.clear();
-	vConsolidated.clear();
+	//vConsolidated.clear();
 
 	/*
 	 * *************************************************************************************************************************
@@ -64,7 +64,10 @@ int startConsolidate(){
 	 */
 
 	// Find the other size of the half reads
-	createParentReads();
+	if (confDB.getKey("mysql").boolVal)
+		createParentReadsFromMySQL();
+	else
+		createParentReads();
 
 	// Make all the reads in a cluster the same length
 	getConsensus();
@@ -212,7 +215,7 @@ void consolidateLocations(){
 	exit(0);
 }
 
-int createParentReads(){
+int createParentReadsFromMySQL(){
 	cout << "\nImporting clusters start... " << endl;
 	fLogFileOut << "\nImporting clusters start... " << endl;
 
@@ -306,6 +309,14 @@ int createParentReads(){
 	}
 
 	output.close();
+
+	return 0;
+}
+
+int createParentReads(){
+	cout << "\nCreating parent reads start... " << endl;
+	fLogFileOut << "\nCreating parent reads start... " << endl;
+
 
 	return 0;
 }
