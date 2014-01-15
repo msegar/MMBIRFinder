@@ -10,8 +10,10 @@ The tool writes to a Log file for easy recording of important parameters, run ti
 Installation
 --------------
 
-The included executable should work in most Linux environments. Otherwise, the source code can be compiled using the included Make file.
-```sh
+The included executable should work in most Linux environments and is located in the Debug folder.
+
+Otherwise, the source code can be compiled using the included Make file.
+```bash
 make -f Makefile
 ```
 
@@ -19,7 +21,7 @@ Usage
 --------------
 Run the program by invoking the executable followed by the configuration file.
 
-```sh
+```bash
 ./mmbirFinder configFile [options]
     -?                  Command line options
     configFile          Program configuration file name
