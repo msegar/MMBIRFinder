@@ -9,6 +9,7 @@
 #include "defs.h"
 
 #include <iostream>
+#include <stdlib.h>
 #include <fstream>
 #include <vector>
 #include <sstream>
@@ -18,6 +19,7 @@
 #include <limits.h>
 #include <ctime>
 #include <cmath>
+#include <map>
 
 using namespace std;
 
@@ -48,6 +50,12 @@ int startConsolidate(){
 		consolidateLocations();
 
 		fLogFileOut << "\nAfter consolidation: " << vConsolidated.size() << endl;
+
+		if (confDB.getKey("mysql").boolVal){
+			vCandidateReads.clear();
+			vConsolidated.clear();
+			exit(0);
+		}
 	}
 
 	// Let's destruct all the elements in the database to save space
@@ -207,12 +215,12 @@ void consolidateLocations(){
 	fLogFileOut << "\nCluster time = " << (int)time(NULL)-time0 << endl;
 
 	// clean up memory before exiting
-	cout << "\nCleaning vCandidateReads..." << endl;
-	vCandidateReads.clear();
-	cout << "Cleaning vConsolidated..." << endl;
-	vConsolidated.clear();
+	//cout << "\nCleaning vCandidateReads..." << endl;
+	//vCandidateReads.clear();
+	//cout << "Cleaning vConsolidated..." << endl;
+	//vConsolidated.clear();
 
-	exit(0);
+	//exit(0);
 }
 
 int createParentReadsFromMySQL(){
@@ -317,6 +325,65 @@ int createParentReads(){
 	cout << "\nCreating parent reads start... " << endl;
 	fLogFileOut << "\nCreating parent reads start... " << endl;
 
+	string sUnalignedFile = confDB.getKey("unalignedFile").stringVal + "_2.sam"; // the name of the unaligned FASTA/SAM file
+	map<string, string> mUnaligned;
+	map<string, string>::iterator iter;
+
+	ifstream input;
+	input.open(sUnalignedFile.c_str());
+	vector<string> curr; // temporary vector to hold SAM file line
+
+	// read in unaligned file
+	for (string row; getline(input, row, '\n');){
+		if (row[0] == '@') // skip lines that start with '@'
+			continue;
+		curr.clear();
+		istringstream ss(row);
+		for (string word; getline(ss, word, '\t');)
+			curr.push_back(word);
+
+		mUnaligned[curr[0].erase(curr[0].size() - 2)] = curr[9]; // remove last 2 characters from read name
+	}
+	input.close();
+
+	cout << "Number of unaligned reads in " << sUnalignedFile << ": " << mUnaligned.size() << endl;
+	fLogFileOut << "Number of unaligned reads in " << sUnalignedFile << ": " << mUnaligned.size() << endl;
+
+	string sReadName = "";
+	string sTemp = "";
+
+	// Now loop through vCanidateReads appending unaligned info to the parent read
+
+	//vector<t_consolidated>& temp;
+
+	int iFound = 0;
+	int iSize = vConsolidated.size();
+	int iSize2 = 0;
+	char last;
+	for (int i = 0; i < iSize; ++i){
+		vector<t_consolidated>& temp = vConsolidated[i];
+		iSize2 = temp.size();
+		for (int j = 0; j < iSize2; ++j){
+			sReadName = temp[j].sReadName;
+			//sReadName = vConsolidated[i].at(j).sReadName;
+			last = sReadName[sReadName.size() - 1];
+			sReadName.erase(sReadName.size() - 2); // remove last 2 characters
+
+			iter = mUnaligned.find(sReadName);
+			if (iter != mUnaligned.end()){
+				if (last == '1'){
+					temp[j].sParentRead += iter->second;
+				} else {
+					//cout << iter->second << " + " << temp[j].sParentRead << endl;
+					//sTemp = iter->second + temp[j].sParentRead;
+					temp[j].sParentRead = iter->second + temp[j].sParentRead;
+				}
+				++iFound;
+			}
+		}
+	}
+
+	fLogFileOut << "Found parent reads: " << iFound << endl;
 
 	return 0;
 }

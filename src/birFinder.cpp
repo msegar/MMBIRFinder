@@ -26,7 +26,6 @@ struct t_read{
 
 // birFinder
 int startCandidateReads(){
-	string sUnalignedFile = confDB.getKey("unalignedFile").stringVal; // the name of the unaligned FASTA/SAM file
 	string sFinalAlignedFile = confDB.getKey("finalAlignedFile").stringVal;
 
 	if (confDB.getKey("performClustering").boolVal == false)
@@ -63,7 +62,7 @@ int createSplitReadDatabase(string sAlignedFilename){
 	int iBadReads = 0;
 	int index = 0;
 
-	fLogFileOut << "Aligned file: " << sAlignedFilename << endl;
+	fLogFileOut << "Aligned file: " << sProjectDirectory + sAlignedFilename << endl;
 
 	// Read in the aligned SAM file and create a database of anchored half reads and their locations
 	// We are treating these as candidate reads
@@ -102,7 +101,10 @@ int createSplitReadDatabase(string sAlignedFilename){
 			}
 
 			for (unsigned int i = 0; i < vReferenceGenome.size(); ++i){
+				//cout << curr[2] << " ?= " << vReferenceGenome[i].fastaHeader << endl;
 				if (curr[2].find(vReferenceGenome[i].fastaHeader) != string::npos)
+					frag.iChromosome = i;
+				else if (vReferenceGenome[i].fastaHeader.find(curr[2]) != string::npos) // TODO find better way of searching for fasta header
 					frag.iChromosome = i;
 			}
 
