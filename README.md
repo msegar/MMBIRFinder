@@ -41,6 +41,8 @@ Run the program by invoking the executable followed by the configuration file.
 A test data set is included to learn the functionality of MMBIRFinder. The simulation FASTQ file contains 5000 inserted
 MMBIRs with an average length of 10 b.p. each. 
 
+The test data is freely available at: https://dl.dropboxusercontent.com/u/6422296/yeast_test_data.fastq.tar.bz2
+
 
 
 Configuration File
