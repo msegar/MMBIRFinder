@@ -14,8 +14,17 @@ The included executable should work in most Linux environments and is located in
 
 Otherwise, the source code can be compiled using the included Make file.
 ```bash
-make -f Makefile
+make -f makefile
 ```
+
+Dependencies
+--------------
+
+MMBIRFinder requires BWA version 0.7.0 or greater. 
+
+However, please consult the BWA website for specific information 
+pertaining to your data. For example, if your data contains paired-end reads longer than 100 b.p. then a newer
+version of BWA may be required. 
 
 Usage
 --------------
@@ -28,6 +37,10 @@ Run the program by invoking the executable followed by the configuration file.
     -j jobIdString      Identifier to be used for this job
     -OconfOption=Value  Override options in the configuration file
 ```
+
+A test data set is included to learn the functionality of MMBIRFinder. The simulation FASTQ file contains 5000 inserted
+MMBIRs with an average length of 10 b.p. each. 
+
 
 
 Configuration File
